@@ -1,10 +1,11 @@
 import os
 from typing import List, Dict
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel, ValidationError
 from groq import Groq
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 load_dotenv()
 
@@ -74,9 +75,39 @@ def get_or_create_conversation(conversation_id: str) -> Conversation:
         conversations[conversation_id] = Conversation()
     return conversations[conversation_id]
 
+# Debug endpoint to see raw request
+@app.post("/debug/")
+async def debug_endpoint(request: Request):
+    body = await request.body()
+    headers = dict(request.headers)
+    print(f"Raw body: {body}")
+    print(f"Headers: {headers}")
+    try:
+        json_body = await request.json()
+        print(f"JSON body: {json_body}")
+        return {"received": json_body, "headers": headers}
+    except Exception as e:
+        return {"error": str(e), "raw_body": body.decode(), "headers": headers}
+
+# Alternative endpoint that accepts any JSON
+@app.post("/test/")
+async def test_endpoint(request: Request):
+    try:
+        body = await request.json()
+        return {"success": True, "received": body}
+    except Exception as e:
+        raw_body = await request.body()
+        return {"success": False, "error": str(e), "raw_body": raw_body.decode()}
+
 # Chat endpoint - support both /chat and /chat/
 @app.post("/chat/")
-async def chat(input: UserInput):
+async def chat(request: Request, input: UserInput):
+    # Debug logging
+    print(f"Received request: {input}")
+    print(f"Message: {input.message}")
+    print(f"Conversation ID: {input.conversation_id}")
+    print(f"Role: {input.role}")
+    
     # Retrieve or create a conversation based on the provided conversation_id
     conversation = get_or_create_conversation(input.conversation_id)
 
