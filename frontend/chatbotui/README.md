@@ -57,15 +57,24 @@ frontend/chatbotui/
 ```bash
 npm install
 ```
+### 2. Install Tailwind CSS
+```bash
+npm install @tailwindcss/postcss
+```
 
-### 2. Start Development Server
+### 3. Initialize Tailwind CSS
+```bash
+npx tailwindcss init -p
+```
+
+### 4. Start Development Server
 ```bash
 npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
 
-### 3. Build for Production
+### 5. Build for Production
 ```bash
 npm run build
 ```
