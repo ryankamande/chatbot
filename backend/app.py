@@ -39,13 +39,53 @@ class UserInput(BaseModel):
     conversation_id: str 
 
 # Define the conversation model
+FINANCE_SYSTEM_PROMPT = (
+    "You are FinGuide, an educational financial assistant.\n"
+    "Goal: Help users understand personal finance topics (budgeting, saving, debt, investing, retirement, taxes at a high level) in clear, neutral, and practical terms.\n"
+    "Boundaries:\n"
+    "- You are not a licensed advisor and cannot give personalized financial, legal, tax, or investment advice.\n"
+    "- Provide general information and education only.\n"
+    "- Do not request or store sensitive personal data (SSNs, account numbers).\n"
+    "Style: Be concise, structured, and friendly. Ask 1-3 clarifying questions when information is missing.\n"
+    "Formatting: Use short sections with brief headings and bullet points where helpful.\n"
+    "When discussing investing, always mention risk, diversification, time horizon, and fees.\n"
+    "If performing calculations, show the formula and the numbers used.\n"
+    "If quoting figures, include currency and units (e.g., USD) where applicable.\n"
+)
+
+
 class Conversation(BaseModel):
-    messages: List[Dict[str, str]] = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages: List[Dict[str, str]] = [
+        {"role": "system", "content": FINANCE_SYSTEM_PROMPT}
+    ]
     active: bool = True
 
 
 # Initialize in memory dictionary to store conversations
 conversations: Dict[str, Conversation] = {}
+
+# Lightweight finance knowledge base (local RAG)
+try:
+    # Import is optional at runtime; app still works without the module
+    from LLM_RAG_Finance.knowledge import get_relevant_context
+except Exception:
+    def get_relevant_context(query: str, k: int = 3, max_chars: int = 800) -> str:
+        return ""
+
+
+def _prune_old_context(conversation: Conversation, keep_recent: int = 10) -> None:
+    """Prune repeated context system messages and keep the conversation trim."""
+    pruned: List[Dict[str, str]] = []
+    for m in conversation.messages:
+        if m.get("role") == "system" and m.get("content", "").startswith("Relevant finance context:"):
+            # Skip old context; we'll re-inject fresh context per turn
+            continue
+        pruned.append(m)
+    # Keep only first system + last N messages to reduce token usage
+    if pruned:
+        head = pruned[0:1]
+        tail = pruned[1:][-keep_recent:]
+        conversation.messages = head + tail
 
 # grok query
 def query_groq_api(conversation: Conversation) -> str:
@@ -118,6 +158,20 @@ async def chat(request: Request, input: UserInput):
         )
         
     try:
+        # Prune old context and keep the thread concise
+        _prune_old_context(conversation)
+
+        # Try to retrieve lightweight finance context and inject as a transient system message
+        try:
+            ctx = get_relevant_context(input.message, k=3, max_chars=800)
+        except Exception:
+            ctx = ""
+        if ctx:
+            conversation.messages.append({
+                "role": "system",
+                "content": f"Relevant finance context:\n{ctx}\n(Use this context only if helpful; otherwise proceed normally.)",
+            })
+
         # Append the user's message to the conversation
         conversation.messages.append({
             "role": input.role,
@@ -125,6 +179,15 @@ async def chat(request: Request, input: UserInput):
         })
         
         response = query_groq_api(conversation)
+
+        # Add a one-time disclaimer on the first assistant reply in a session
+        is_first_reply = len([m for m in conversation.messages if m["role"] == "assistant"]) == 0
+        if is_first_reply:
+            disclaimer = (
+                "Important: I’m an AI for educational finance information and not a licensed advisor. "
+                "This is general guidance, not financial, legal, or tax advice."
+            )
+            response = f"{disclaimer}\n\n{response}"
 
         # Append the assistant's response to the conversation
         conversation.messages.append({
