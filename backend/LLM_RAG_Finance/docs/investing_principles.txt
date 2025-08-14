@@ -1,0 +1,9 @@
+Investing Principles (General, educational)
+
+- Diversification reduces idiosyncratic risk (e.g., broad index funds)
+- Consider time horizon: longer horizons typically tolerate more volatility
+- Risk and return are related; higher expected returns usually involve higher risk
+- Fees matter: expense ratios and transaction costs reduce net returns
+- Asset allocation should align with risk tolerance and goals
+- Rebalance periodically to maintain target allocation
+- Past performance does not guarantee future results

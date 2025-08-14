@@ -6,7 +6,7 @@ const App = () => {
   const [chatHistory, setChatHistory] = useState([
     {
       sender: 'ai',
-      text: '👋 Hello! I\'m your AI assistant powered by Groq LLaMA 3.1. How can I help you today?',
+      text: '👋 Hello! I\'m your Finance Assistant (educational). Ask about budgeting, saving, debt, investing, or retirement. Not financial advice.',
       timestamp: new Date()
     }
   ]);
@@ -138,8 +138,8 @@ const App = () => {
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black/20 animate-ping"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">AI Assistant</h1>
-                <p className="text-purple-200 text-sm">Powered by Groq LLaMA 3.1</p>
+                <h1 className="text-2xl font-bold text-white">Finance Assistant</h1>
+                <p className="text-purple-200 text-sm">Educational info • Not financial, legal, or tax advice</p>
               </div>
             </div>
 
@@ -177,8 +177,8 @@ const App = () => {
 
                 {/* Avatar */}
                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm ${msg.sender === 'user'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                  : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                   }`}>
                   {msg.sender === 'user' ? '👤' : '🤖'}
                 </div>
@@ -186,10 +186,10 @@ const App = () => {
                 {/* Message Bubble */}
                 <div className="flex flex-col">
                   <div className={`px-4 py-3 rounded-2xl ${msg.sender === 'user'
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-br-md'
-                      : msg.isError
-                        ? 'bg-red-500/20 text-red-200 border border-red-500/30 rounded-bl-md'
-                        : 'bg-white/10 text-white backdrop-blur-sm border border-white/10 rounded-bl-md'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-br-md'
+                    : msg.isError
+                      ? 'bg-red-500/20 text-red-200 border border-red-500/30 rounded-bl-md'
+                      : 'bg-white/10 text-white backdrop-blur-sm border border-white/10 rounded-bl-md'
                     } shadow-lg`}>
                     <p className="text-sm lg:text-base leading-relaxed">{msg.text}</p>
                   </div>
@@ -234,7 +234,7 @@ const App = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="w-full p-4 pr-12 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/50 resize-none transition-all duration-200"
-                  placeholder="Type your message here... (Press Enter to send)"
+                  placeholder="Ask a finance question (e.g., budget, investing, retirement)…  Press Enter to send"
                   rows="1"
                   style={{
                     minHeight: '56px',
@@ -250,8 +250,8 @@ const App = () => {
               <button
                 type="submit"
                 className={`p-4 rounded-2xl font-medium transition-all duration-200 flex items-center space-x-2 ${loading || !message.trim()
-                    ? 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 hover:scale-105 shadow-lg hover:shadow-purple-500/25'
+                  ? 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 hover:scale-105 shadow-lg hover:shadow-purple-500/25'
                   }`}
                 disabled={loading || !message.trim()}
               >
@@ -268,7 +268,10 @@ const App = () => {
 
             <div className="mt-3 flex items-center justify-between text-xs text-white/40">
               <span>Conversation ID: {conversationId?.slice(-8)}</span>
-              <span>Messages: {chatHistory.length}</span>
+              <span className="flex items-center gap-2">
+                <span>Messages: {chatHistory.length}</span>
+                <span className="hidden sm:inline px-2 py-1 rounded-full bg-white/5 border border-white/10 text-white/60">Educational only</span>
+              </span>
             </div>
           </div>
         )}
