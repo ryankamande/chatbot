@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const App = () => {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([
     {
@@ -46,7 +47,7 @@ const App = () => {
     setMessage('');
 
     try {
-      const response = await fetch(`http://localhost:8000/chat/`, {
+      const response = await fetch(`${API_URL}/chat/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,8 +178,8 @@ const App = () => {
 
                 {/* Avatar */}
                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm ${msg.sender === 'user'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                  : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                   }`}>
                   {msg.sender === 'user' ? '👤' : '🤖'}
                 </div>
@@ -186,10 +187,10 @@ const App = () => {
                 {/* Message Bubble */}
                 <div className="flex flex-col">
                   <div className={`px-4 py-3 rounded-2xl ${msg.sender === 'user'
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-br-md'
-                      : msg.isError
-                        ? 'bg-red-500/20 text-red-200 border border-red-500/30 rounded-bl-md'
-                        : 'bg-white/10 text-white backdrop-blur-sm border border-white/10 rounded-bl-md'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-br-md'
+                    : msg.isError
+                      ? 'bg-red-500/20 text-red-200 border border-red-500/30 rounded-bl-md'
+                      : 'bg-white/10 text-white backdrop-blur-sm border border-white/10 rounded-bl-md'
                     } shadow-lg`}>
                     <p className="text-sm lg:text-base leading-relaxed">{msg.text}</p>
                   </div>
@@ -250,8 +251,8 @@ const App = () => {
               <button
                 type="submit"
                 className={`p-4 rounded-2xl font-medium transition-all duration-200 flex items-center space-x-2 ${loading || !message.trim()
-                    ? 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 hover:scale-105 shadow-lg hover:shadow-purple-500/25'
+                  ? 'bg-gray-600/50 text-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 hover:scale-105 shadow-lg hover:shadow-purple-500/25'
                   }`}
                 disabled={loading || !message.trim()}
               >
