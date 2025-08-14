@@ -7,7 +7,7 @@ const App = () => {
   const [chatHistory, setChatHistory] = useState([
     {
       sender: 'ai',
-      text: '👋 Hello! I\'m your AI assistant powered by Groq LLaMA 3.1. How can I help you today?',
+      text: '👋 Hello! I\'m your Finance Assistant (educational). Ask about budgeting, saving, debt, investing, or retirement. Not financial advice.',
       timestamp: new Date()
     }
   ]);
@@ -139,8 +139,8 @@ const App = () => {
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black/20 animate-ping"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">AI Assistant</h1>
-                <p className="text-purple-200 text-sm">Powered by Groq LLaMA 3.1</p>
+                <h1 className="text-2xl font-bold text-white">Finance Assistant</h1>
+                <p className="text-purple-200 text-sm">Educational info • Not financial, legal, or tax advice</p>
               </div>
             </div>
 
@@ -235,7 +235,7 @@ const App = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="w-full p-4 pr-12 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-white/50 resize-none transition-all duration-200"
-                  placeholder="Type your message here... (Press Enter to send)"
+                  placeholder="Ask a finance question (e.g., budget, investing, retirement)…  Press Enter to send"
                   rows="1"
                   style={{
                     minHeight: '56px',
@@ -269,7 +269,10 @@ const App = () => {
 
             <div className="mt-3 flex items-center justify-between text-xs text-white/40">
               <span>Conversation ID: {conversationId?.slice(-8)}</span>
-              <span>Messages: {chatHistory.length}</span>
+              <span className="flex items-center gap-2">
+                <span>Messages: {chatHistory.length}</span>
+                <span className="hidden sm:inline px-2 py-1 rounded-full bg-white/5 border border-white/10 text-white/60">Educational only</span>
+              </span>
             </div>
           </div>
         )}

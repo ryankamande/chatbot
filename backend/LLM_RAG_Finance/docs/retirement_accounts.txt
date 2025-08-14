@@ -1,0 +1,11 @@
+Retirement Accounts (US overview)
+
+401(k): employer-sponsored; contributions may be pre-tax (traditional) or post-tax (Roth). Employer match is common; aim to capture full match if available.
+
+IRA: individual retirement account; Traditional (tax-deferred) and Roth (post-tax). Contribution limits and income eligibility rules apply.
+
+RMDs: Required Minimum Distributions for traditional accounts starting at a certain age; Roth IRAs typically have no lifetime RMDs for original owner.
+
+General:
+- Contribution limits change; check current IRS guidelines.
+- Early withdrawals may incur taxes/penalties.
